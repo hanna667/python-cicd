@@ -79,8 +79,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:${{ needs.build.outputs.sha }}
+          docker push hanna667/hanna
 
   ses_integration:
     needs: build
