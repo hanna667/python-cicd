@@ -27,13 +27,14 @@ jobs:
       - name: Create Dockerfile
         run: |
           cat <<'EOF' > Dockerfile
-          FROM node:20-alpine
+          FROM python:3.11-slim
           WORKDIR /app
-          COPY package*.json ./
-          RUN npm install --production
-          COPY . .
-          EXPOSE 3000
-          CMD ["node", "index.js"]
+          COPY App.py .
+          COPY requirements.txt requirements.txt
+          RUN pip install requirements.txt 
+          
+          EXPOSE 5000
+          CMD ["python", "App.py"]
           EOF
 
       - name: Get commit SHA
