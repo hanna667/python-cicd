@@ -9,7 +9,6 @@ permissions:
   id-token: write # Required to fetch the OIDC token for AWS authentication
   contents: read  # Required for 'actions/checkout' to read your repository code
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,10 +20,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          # IMPORTANT: Replace 'YOUR_IAM_ROLE_ARN_GOES_HERE' with the actual ARN of your IAM role from AWS!
           role-to-assume: arn:aws:iam::760715349705:role/pythoncicd
-          aws-region: eu-north-1 # Example: us-east-1
-
+          aws-region: eu-north-1
 
       # Create Dockerfile inside the workflow
       - name: Create Dockerfile
@@ -90,7 +87,7 @@ jobs:
         run: |
           aws ses send-email \
             --from 'hannapaikkatt1234@gmail.com' \
-            --destination 'hannap607@gmail.com"' \
+            --destination 'ToAddresses="hannap607@gmail.com"' \
             --message 'Subject={Data="✅ Build Success - ${{ github.repository }}"},Body={Text={Data="Build for ${{ github.repository }} on branch `${{ github.ref_name}}` was successful!\n\nCommit: `${{ github.sha}}`\nWorkflow Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}}' \
             --region eu-north-1
       - name: Send Email Notification (on failure)
