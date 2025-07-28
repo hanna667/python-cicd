@@ -21,7 +21,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::760715349705:role/pythoncicd
+          role-to-assume: arn:aws:iam::760715349705:role/bababa
           aws-region: eu-north-1
 
       - name: Create Dockerfile
