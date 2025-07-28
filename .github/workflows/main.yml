@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - '**'
+permissions:
+  id-token: write # Required to fetch the OIDC token for AWS authentication
+  contents: read  # Required for 'actions/checkout' to read your repository code
+
 
 jobs:
   build:
