@@ -8,6 +8,11 @@ on:
 permissions:
   id-token: write
   contents: read
+env:
+  IMAGE_NAME: hanna667/hanna
+  REGISTRY: docker.io
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 jobs:
   build:
@@ -78,8 +83,7 @@ jobs:
                        -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:${{ needs.build.outputs.sha }} .
 
       - name: Push Docker image
-        run: |
-          docker push hanna667/hanna
+        run: docker push $IMAGE_NAME:latest
 
   ses_integration:
     needs: build
