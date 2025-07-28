@@ -1,19 +1,11 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
-    return "Welcome to the Flask app!"
+    return "Hello, Flask in Docker!"
 
-@app.route('/hello/<name>')
-def hello_name(name):
-    return f"Hello, {name}!"
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
 
-@app.route('/api/data', methods=['POST'])
-def api_data():
-    data = request.get_json()
-    return jsonify({"received": data})
-
-if __name__ == '__main__':
-    app.run(debug=True)
