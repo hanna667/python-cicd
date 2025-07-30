@@ -9,7 +9,7 @@ permissions:
   id-token: write
   contents: read
 env:
-  IMAGE_NAME: hanna667/hanna
+  IMAGE_NAME: hanna667/hanna-myapp:latest
   REGISTRY: docker.io
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -22,11 +22,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::760715349705:role/bababa
+          role-to-assume: arn:aws:iam::760715349705:role/pythoncicd
           aws-region: eu-north-1
 
       - name: Create Dockerfile
@@ -42,35 +42,6 @@ jobs:
           CMD ["python", "App.py"]
           EOF
 
-      - name: Get commit SHA
-        id: get_sha
-        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest \
-                       -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:${{ steps.get_sha.outputs.sha }} .
-
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && needs.build.result == 'success'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create Dockerfile
-        run: |
-          cat <<'EOF' > Dockerfile
-          FROM node:20-alpine
-          WORKDIR /app
-          COPY package*.json ./
-          RUN npm install --production
-          COPY . .
-          EXPOSE 3000
-          CMD ["node", "index.js"]
-          EOF
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -78,22 +49,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest \
-                       -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:${{ needs.build.outputs.sha }} .
-
+        run: docker build -t hanna667/hanna-myapp:latest .
       - name: Push Docker image
-        run: docker push $IMAGE_NAME:latest
-
-  ses_integration:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::760715349705:role/pythoncicd
-          aws-region: eu-north-1
+        run: docker push $IMAGE_NAME
 
       - name: Send Email Notification (on success)
         if: success()
